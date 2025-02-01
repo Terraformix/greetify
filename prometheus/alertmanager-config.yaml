@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: global-alert-manager-configuration
+  namespace: greetify
+  labels:
+    release: kube-prometheus
+spec:
+  receivers:
+    # - name: email-receiver
+    #   email_configs:
+    #   - to: 'my@email.com'
+    #     from: 'alertmanager@email.com'
+    #     smarthost: smtp.sendgrid.net:587
+    #     auth_username: 'apikey'
+    #     auth_password: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+    - name: slack-receiver
+      slackConfigs:
+        - apiURL:
+            # Shoud have a secret matching this for the Slack webhook URL
+            name: slack-webhook
+            key: url
+          channel: "#alerts"
+          sendResolved: true
+          iconEmoji: ":bell:"
+          title: "{{ .CommonAnnotations.title }}"
+          text: "<!channel> \nSummary: {{ .CommonAnnotations.summary }}\nDescription: {{ .CommonAnnotations.description }}"
+
+  route:
+    # Matching conditions for alerts
+    matchers:
+      # name of the label to match
+      - name: app
+        value: greetify
+        matchType: =
+    groupBy: ["job", "severity"]  # Group alerts by name and app
+    groupWait: 10s                 # Wait 10s to send first alert
+    groupInterval: 60s              # How long to wait before sending an updated notification
+    repeatInterval: 60s             # How long to wait before repeating the last notification
+    receiver: slack-receiver # Default receiver for matched alerts (Slack)

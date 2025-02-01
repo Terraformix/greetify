@@ -1,0 +1,117 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: greetify-alert-rules
+  labels:
+    prometheus: kube-prometheus
+    role: alert-rules
+  namespace: greetify
+spec:
+  groups:
+  
+  # =====================================
+  # RECORDING RULES
+  # =====================================
+  - name: greetify.recording.rules
+    rules:
+    - record: greetify:request_rate:5m
+      expr: sum(rate(http_requests_total{app="greetify"}[5m]))
+      # Records the 5-minute rate of HTTP requests for the greetify app
+
+    - record: greetify:error_rate_5xx:5m
+      expr: sum(rate(http_requests_total{app="greetify", status=~"5.*"}[5m])) / sum(rate(http_requests_total{app="greetify"}[5m])) * 100
+      # Records the 5xx error rate (percentage) for the greetify app over the last 5 minutes
+
+    - record: greetify:error_rate_4xx:5m
+      expr: sum(rate(http_requests_total{app="greetify", status=~"4.."}[5m]))
+      # Records the number of 4xx errors over the last 5 minutes for the greetify app
+
+  # =====================================
+  # ALERTING RULES
+  # =====================================
+  - name: greetify-backend.alerts
+    rules:
+    - alert: PodDown
+      expr: sum(up{container="greetify-backend"}) < 2
+      for: 10s
+      labels:
+        severity: critical
+        app: greetify
+      annotations:
+        title: "🚨 Pod Down Alert: Less than 2 pod(s) running 🚨"
+        summary: "⚠️ The `greetify-backend` pod is down or has fewer than 2 replica(s) running."
+        description: |
+          The `greetify-backend` pod is not running or has fewer than 2 replica(s) running.
+          Please check the pod status and ensure that the deployment has enough replicas to handle traffic.
+
+    - alert: GreetifyHighTrafficAlert
+      expr: sum(greetify:request_rate:5m) * 60 > 5000
+      for: 10s
+      labels:
+        severity: warning
+        app: greetify
+      annotations:
+        title: "🚨 High Traffic Detected 🚨"
+        summary: "⚠️ Traffic rate exceeds the defined threshold."
+        description: |
+          The traffic rate for the `greetify-backend` service has exceeded 5,000 requests per minute.
+          Current traffic rate: {{ $value }} req/min (Threshold: 5,000 req/min).
+
+    - alert: GreetifyHighErrorRate
+      expr: sum(greetify:error_rate_5xx:5m) * 60 > 100
+      for: 30s
+      labels:
+        severity: warning
+        app: greetify
+      annotations:
+        title: "🚨 High 5xx Error Rate Alert 🚨"
+        summary: "⚠️ High error rate detected for 5xx responses."
+        description: The rate of 5xx errors is above 100 requests per minute.
+
+    - alert: GreetifyHigh4xxErrorRate
+      expr: sum(greetify:error_rate_4xx:5m) * 60 > 100
+      for: 10s
+      labels:
+        severity: warning
+        app: greetify
+      annotations:
+        title: "🚨 High 4xx Error Rate Alert 🚨"
+        summary: "⚠️ High error rate detected for 4xx responses."
+        description: The rate of 4xx errors is above 100 requests per minute.
+
+    - alert: GreetifyHighGreetingsCreated
+      expr: sum(greetings_created_count{app="greetify"}) > 50
+      for: 10s
+      labels:
+        severity: warning
+        app: greetify
+      annotations:
+        title: "🚨 High Greetings Created Alert 🚨"
+        summary: "⚠️ The number of greetings created exceeds the defined threshold."
+        description: The number of greetings created for the `greetify` service has exceeded 50 greetings within the last minute.
+
+    - alert: GreetifyHighGreetingsClicked
+      expr: sum(greetings_clicked_count{app="greetify"}) > 5000
+      for: 10s
+      labels:
+        severity: warning
+        app: greetify
+      annotations:
+        title: "🚨 High Greetings Clicked Alert 🚨"
+        summary: "⚠️ The number of greetings clicked exceeds the defined threshold."
+        description: The number of greetings clicked has exceeded 5,000 within the last minute.
+
+  - name: greetify-frontend.alerts
+    rules:
+    - alert: PodDown
+      expr: sum(up{container="greetify-frontend"}) < 2
+      for: 10s
+      labels:
+        severity: critical
+        app: greetify
+      annotations:
+        title: "🚨 Pod Down Alert: Less than 2 pod(s) running 🚨"
+        summary: "⚠️ The `greetify-frontend` pod is down or has fewer than 2 replica(s) running."
+        description: |
+          The `greetify-frontend` pod is not running or has fewer than 2 replica(s) running.
+          Please check the pod status and ensure that the deployment has enough replicas to handle traffic.

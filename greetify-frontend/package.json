@@ -1,0 +1,26 @@
+{
+  "name": "greetings-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode development",
+    "build": "vite build --mode production",
+    "preview": "vite preview",
+    "docker:build-push": "./docker-build.sh"
+  },
+  "dependencies": {
+    "@microsoft/applicationinsights-web": "^3.3.4",
+    "axios": "^1.7.9",
+    "vue": "^3.5.13",
+    "vue3-toastify": "^0.2.8",
+    "vuejs-dialog": "^2.0.0-rc.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1",
+    "supertest": "^7.0.0",
+    "vite": "^6.0.3"
+  }
+}

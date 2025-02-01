@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  greetify-backend:
+    container_name: greetify-backend
+    image: Terraformix/greetify-backend:1.0.0
+    # build:
+    #   context: ../greetify-backend/
+    #   dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    restart: always # restart the container if it stops since the SQL server needs time to start
+    environment:
+      #- DB_HOST=10.0.0.9
+      - DB_HOST=greetify-db
+      - DB_USER=sa
+      - DB_PASSWORD=p@ssw0rd12345
+      - DB_PORT=1433
+      - DB_NAME=GreetifyDB
+      - TABLE_NAME=greetings
+      - PORT=8081
+      - GREETIFY_VALIDATOR_URL=http://greetify-validator:5194
+    depends_on:
+      - greetify-db
+    networks:
+      - greetify-network
+
+  greetify-validator:
+    container_name: greetify-validator
+    image: Terraformix/greetify-validator:1.0.0
+    # build:
+    #   context: ../greetify-validator/
+    #   dockerfile: Dockerfile
+    ports:
+      - "5194:5194"
+    networks:
+      - greetify-network
+
+  greetify-frontend:
+    container_name: greetify-frontend
+    image: Terraformix/greetify-frontend:1.0.0
+    # build:
+    #   context: ../greetify-frontend/
+    #   dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_APP_API_URL=http://greetify-backend:8081
+    depends_on:
+      - greetify-backend
+    networks:
+      - greetify-network
+
+  greetify-db:
+    container_name: greetify-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=p@ssw0rd12345
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - greetify-network
+
+volumes:
+  sqlserver_data:
+
+networks:
+  greetify-network:
+    driver: bridge

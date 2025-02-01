@@ -1,0 +1,46 @@
+- name: Install GH Actions runner prerequisite software
+  hosts: agent
+  become: true
+  vars:
+    script_path: "../self-hosted-runner-setup.sh"
+    remote_dir: "/opt/self-hosted-runner"
+    remote_script_path: "/opt/self-hosted-runner/self-hosted-runner-setup.sh"
+  tasks:
+    - name: Output facts
+      debug:
+        msg:
+          - "OS: {{ ansible_facts['os_family'] }} {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+          - "Hostname: {{ ansible_facts['hostname'] }}"
+          - "IP Address: {{ ansible_facts['ansible_default_ipv4']['address'] | default('N/A') }}"
+          - "CPU: {{ ansible_facts['processor_cores'] }} cores"
+          - "Memory: {{ ansible_facts['memtotal_mb'] }} MB"
+
+    - name: Create the target directory on the remote machine
+      file:
+        path: "{{ remote_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copy the script to the remote directory
+      copy:
+        src: "{{ script_path }}"
+        dest: "{{ remote_script_path }}"
+        mode: "0755"
+
+    - name: Verify the script exists on the remote machine
+      stat:
+        path: "{{ remote_script_path }}"
+      register: script_file
+
+    - name: Output debug information about the script file
+      debug:
+        var: script_file
+
+    - name: Execute the script on the remote machine
+      command: "{{ remote_script_path }}"
+      register: script_output
+      when: script_file.stat.exists
+
+    - name: Display the script output
+      debug:
+        var: script_output.stdout
