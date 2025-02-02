@@ -46,9 +46,7 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - **GitHub Actions CI/CD** – Set up a K3s cluster on an Ubuntu VM to host my application.
 - **Implemented MetalLB** – Configured MetalLB as a load balancer to manage external traffic for services running in the K3s cluster.
 
-
-
-
+---
 
 ### 🔹 GitOps & CI/CD Automation
 
