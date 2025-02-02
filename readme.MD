@@ -80,9 +80,29 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 
 📌 **Traffic Distribution & Service Flow**
 
-![Traffic Splitting](https://github.com/Terraformix/greetify/blob/main/trafficsplit-80-20.png)
+![Kiali visualization showing GET request flow through the service mesh](https://github.com/Terraformix/greetify/blob/main/service-mesh-get.png)
 
-*Figure 3: Canary deployment with 80/20 traffic split between service versions.*
+*Figure 3: Service mesh traffic visualization for GET requests in Kiali*
+
+![Kiali visualization showing CREATE request flow through the service mesh](https://github.com/Terraformix/greetify/blob/main/service-mesh-createpng.png)
+
+*Figure 4: Service mesh traffic visualization for POST requests in Kiali*
+
+![Traffic distribution showing 80/20 split between service versions](https://github.com/Terraformix/greetify/blob/main/trafficsplit-80-20.png)
+
+*Figure 5: Canary deployment with 80/20 traffic split between service versions*
+
+![Traffic distribution showing 50/50 split between service versions](https://github.com/Terraformix/greetify/blob/main/trafficsplit-50-50.png)
+
+*Figure 6: Equal traffic distribution (50/50) between service versions*
+
+![Traffic distribution showing 20/80 split between service versions](https://github.com/Terraformix/greetify/blob/main/trafficsplit-20-80.png)
+
+*Figure 7: Canary deployment with 20/80 traffic split between service versions*
+
+![Traffic distribution showing 100/0 split between service versions](https://github.com/Terraformix/greetify/blob/main/trafficsplit-100-0.png)
+
+*Figure 8: Final migration with 100% traffic to new version*
 
 ---
 
@@ -108,9 +128,30 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 
 📌 **Monitoring Dashboard**
 
-![Grafana Dashboard](https://github.com/Terraformix/greetify/blob/main/grafana-1.png)
 
-*Figure 4: Grafana dashboard overview of application performance metrics.*
+![Grafana dashboard showing key application metrics and performance indicators](https://github.com/Terraformix/greetify/blob/main/grafana-1.png)
+
+*Figure 9: Grafana dashboard overview of application performance metrics*
+
+![Grafana dashboard displaying detailed system resource utilization](https://github.com/Terraformix/greetify/blob/main/grafana-2.png)
+
+*Figure 10: System resource monitoring dashboard in Grafana*
+
+![Grafana dashboard showing application-specific metrics](https://github.com/Terraformix/greetify/blob/main/grafana-3.png)
+
+*Figure 11: Application-specific metrics*
+
+![Slack notification for critical alert](https://github.com/Terraformix/greetify/blob/main/alert-1.jpg)
+
+*Figure 12: Critical alert notification in Slack*
+
+![Slack notification for warning alert](https://github.com/Terraformix/greetify/blob/main/alert-2.jpg)
+
+*Figure 13: Warning alert notification in Slack*
+
+![Slack notification for resolved alert](https://github.com/Terraformix/greetify/blob/main/alert-3.jpg)
+
+*Figure 14: Alert resolution notification in Slack*
 
 ---
 
