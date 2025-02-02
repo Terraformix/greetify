@@ -1,0 +1,128 @@
+name: Greetify CI/CD Pipeline
+
+on:
+  # Trigger pipeline manually
+  # workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY_NAME: Terraformix
+  FRONTEND_IMAGE_NAME: greetify-frontend
+  BACKEND_IMAGE_NAME: greetify-backend
+  IMAGE_TAG: ${{ github.sha }} 
+  GREETIFY_NAMESPACE: greetify
+
+  HELM_GREETIFY_RELEASE_NAME: greetify
+  HELM_GREETIFY_CHART_PATH: ./helm/greetify
+  
+jobs:
+
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+    
+      - name: Build Greetify Frontend Docker Image
+        run: docker build ./greetify-frontend --tag $REGISTRY_NAME/$FRONTEND_IMAGE_NAME:$IMAGE_TAG --no-cache
+
+      - name: Build Greetify Backend Docker Image
+        run: docker build ./greetify-backend --tag $REGISTRY_NAME/$BACKEND_IMAGE_NAME:$IMAGE_TAG --no-cache
+
+      - name: Scanning base Docker images for vulnerabilities
+        run: bash ./scripts/trivy-scan.sh
+
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login -u $REGISTRY_NAME --password-stdin
+  
+      - name: Push Image to Docker Hub
+        run: |
+          docker push $REGISTRY_NAME/$FRONTEND_IMAGE_NAME:$IMAGE_TAG
+          docker push $REGISTRY_NAME/$BACKEND_IMAGE_NAME:$IMAGE_TAG
+
+  update-manifest-repo:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Source Repository
+        uses: actions/checkout@v4
+
+      - name: Clone Manifest Repository
+        run: git clone https://x-access-token:${PAT_GITHUB}@github.com/Terraformix/greetify-manifests.git
+        env:
+          PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
+
+      - name: Update Greetify Image Tags
+        run: |
+          cd greetify-manifests/helm/greetify
+          sed -i "/greetifyFrontend:/,/tag:/s/tag: .*/tag: $IMAGE_TAG/" values.yaml
+          sed -i "/greetifyBackend:/,/tag:/s/tag: .*/tag: $IMAGE_TAG/" values.yaml
+      
+      - name: Commit and Push Changes
+        run: |
+          cd greetify-manifests
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git remote set-url origin https://x-access-token:${PAT_GITHUB}@github.com/Terraformix/greetify-manifests.git
+          git add .
+          git commit -m "Update image tag for ${{ github.repository }} to $IMAGE_TAG"
+          git push
+        env:
+          PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
+
+  notify-manifest-repo:
+    runs-on: ubuntu-latest
+    needs: update-manifest-repo
+    steps:
+
+      - name: Trigger pipeline in manifest repo
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.PAT_GITHUB }}" \
+            https://api.github.com/repos/Terraformix/greetify-manifests/dispatches \
+            -d '{"event_type":"source_push","client_payload":{"ref":"${{ github.ref }}","sha":"${{ github.sha }}"}}'
+
+
+  # Deploy stage for CICD to directly deploy to K8S without using GitOps
+  # deploy:
+  #   name: Deploy to K8S
+  #   runs-on: ubuntu-latest
+  #   needs: build
+
+  #   steps:
+
+  #     # Checkout code
+  #     - name: Git Checkout
+  #       uses: actions/checkout@v2
+            
+  #     - name: Setup Helm
+  #       uses: azure/setup-helm@v3
+      
+  #     - name: Setup kubectl
+  #       uses: azure/setup-kubectl@v3
+
+  #     - name: Configure kubeconfig
+  #       run: |
+  #         mkdir -p $HOME/.kube
+  #         echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+        
+  #     - name: Create Greetify namespace
+  #       run: kubectl create namespace $GREETIFY_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+
+  #     - name: Deploy using Helm
+  #       run: |
+  #         # Set certManager.enabled to false after obtainining initial certificate to prevent hitting the issue limit
+  #         helm upgrade --install $HELM_GREETIFY_RELEASE_NAME $HELM_GREETIFY_CHART_PATH \
+  #           --set greetifyBackend.image.tag=$IMAGE_TAG \
+  #           --set greetifyFrontend.image.tag=$IMAGE_TAG \
+  #           --set registry.name=$REGISTRY_NAME \
+  #           --set certManager.enabled=false \
+  #           --namespace $GREETIFY_NAMESPACE
