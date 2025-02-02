@@ -47,6 +47,9 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - **Implemented MetalLB** – Configured MetalLB as a load balancer to manage external traffic for services running in the K3s cluster.
 
 
+
+
+
 ### 🔹 GitOps & CI/CD Automation
 
 - **GitHub Actions CI/CD**: Built pipelines for deploying apps to an AKS Cluster, using both cloud-hosted and self-hosted runners for optimized performance.
