@@ -30,7 +30,7 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - **RBAC & Service Accounts**: Restricted pod permissions with Role-Based Access Control (RBAC) and dedicated service accounts.
 - **Health Probes**: Configured readiness/liveness probes for reliable app availability.
 
----
+___
 
 ### 🔹 Azure Infrastructure as Code (IaC) with Terraform
 
