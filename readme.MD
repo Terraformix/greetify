@@ -40,6 +40,7 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 ![Azure Architecture Diagram showing the complete infrastructure setup including AKS, ACR, Private Endpoints, and networking components](https://github.com/Terraformix/greetify/blob/main/azure-architecture-diagram.jpg)
 *Figure 1: High-level architecture diagram showcasing the Azure infrastructure components and their interactions*
 
+
 ### 🔹 Lightweight cluster setup on Ubuntu using K3s
 
 - **GitHub Actions CI/CD** – Set up a K3s cluster on an Ubuntu VM to host my application.
@@ -97,12 +98,15 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - Created Prometheus Rules (Recording rules and Alert rules) to store basic pre-computed queries and send real-time notifications on metrics to Slack.
 
 ![Grafana dashboard showing key application metrics and performance indicators](https://github.com/Terraformix/greetify/blob/main/grafana-1.png)
+
 *Figure 9: Grafana dashboard overview of application performance metrics*
 
 ![Grafana dashboard displaying detailed system resource utilization](https://github.com/Terraformix/greetify/blob/main/grafana-2.png)
+
 *Figure 10: System resource monitoring dashboard in Grafana*
 
 ![Grafana dashboard showing application-specific metrics](https://github.com/Terraformix/greetify/blob/main/grafana-3.png)
+
 *Figure 11: Application-specific metrics*
 
 ![Slack notification for critical alert](https://github.com/Terraformix/greetify/blob/main/alert-1.jpg)
@@ -117,6 +121,8 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 
 *Figure 14: Alert resolution notification in Slack*
 
+
+
 ### 🔹 Docker compose
 
 - Configured a Docker Compose file to define and manage all required services, ensuring consistent and repeatable deployments.
@@ -125,6 +131,8 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 ### 🔹 Scripting & Automation
 
 - Developed Bash scripts to automate Helm chart installations, run scans on Docker images and Static configuration files, and test Istio Virtual Service traffic splitting capabilities.
+
+
 
 ## 🔐 Why This Project Matters
 
@@ -137,6 +145,6 @@ This project was an opportunity to apply enterprise-level DevOps practices. I ga
 ## 📚 Related Repositories
 
 - [Greetify Manifests](https://github.com/YourUsername/greetify-manifests) - Repository to hold various Kubernetes manifests.
-- [Greetify Valifator](https://github.com/YourUsername/greetify-validator) - C# .NET Core Microservice that validates greetings entered against a static list.
+- [Greetify Validator](https://github.com/YourUsername/greetify-validator) - C# .NET Core Microservice that validates greetings entered against a static list.
 
 #DevOps #Azure #Kubernetes #GitOps #CloudComputing #CI/CD #DevSecOps #Terraform
