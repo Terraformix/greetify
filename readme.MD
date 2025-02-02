@@ -141,17 +141,17 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 
 *Figure 11: Application-specific metrics*
 
-![Slack notification for critical alert](https://github.com/Terraformix/greetify/blob/main/alert-1.jpg)
+![Slack notification 1](https://github.com/Terraformix/greetify/blob/main/alert-1.jpg)
 
-*Figure 12: Critical alert notification in Slack*
+*Figure 12: Alert notification in Slack 1*
 
-![Slack notification for warning alert](https://github.com/Terraformix/greetify/blob/main/alert-2.jpg)
+![Slack notification 2](https://github.com/Terraformix/greetify/blob/main/alert-2.jpg)
 
-*Figure 13: Warning alert notification in Slack*
+*Figure 13: Alert notification in Slack 2*
 
-![Slack notification for resolved alert](https://github.com/Terraformix/greetify/blob/main/alert-3.jpg)
+![Slack notification 3](https://github.com/Terraformix/greetify/blob/main/alert-3.jpg)
 
-*Figure 14: Alert resolution notification in Slack*
+*Figure 14: Alert notification in Slack 3*
 
 ---
 
