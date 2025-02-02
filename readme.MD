@@ -16,6 +16,7 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - **CICD & GitOps**: Github Actions & ArgoCD
 - **Cloud services**: Azure Kubernetes (AKS), Azure Container Registry, Key Vault, Application Gateway, Log Analytics Workspace, Azure SQL Server, IAM roles
 - **Orchestration**: Kubernetes (Azure Kubernetes Service and K3s)
+- **Configuration management**: Ansible
 - **Monitoring & Visualization**: Prometheus & Grafana
 - **Service Mesh**: Istio
 
@@ -29,6 +30,8 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - **RBAC & Service Accounts**: Restricted pod permissions with Role-Based Access Control (RBAC) and dedicated service accounts.
 - **Health Probes**: Configured readiness/liveness probes for reliable app availability.
 
+---
+
 ### 🔹 Azure Infrastructure as Code (IaC) with Terraform
 
 - Provisioned a private AKS cluster, Azure Container Registry (ACR), and SQL Server, securing them with private endpoints and VNet peering to ensure isolated communication.
@@ -40,6 +43,7 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 ![Azure Architecture Diagram showing the complete infrastructure setup including AKS, ACR, Private Endpoints, and networking components](https://github.com/Terraformix/greetify/blob/main/azure-architecture-diagram.jpg)
 *Figure 1: High-level architecture diagram showcasing the Azure infrastructure components and their interactions*
 
+---
 
 ### 🔹 Lightweight cluster setup on Ubuntu using K3s
 
@@ -54,7 +58,10 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - **ArgoCD for GitOps**: Implemented ArgoCD for GitOps, ensuring all deployments are version-controlled and automatically applied to the cluster to avoid manual operations changing the state of the cluster.
 
 ![ArgoCD dashboard showing the Greetify application deployment status and health](https://github.com/Terraformix/greetify/blob/main/argocd.jpg)
+
 *Figure 2: ArgoCD UI displaying the synchronized state of Greetify application components*
+
+---
 
 ### 🔹 Service Mesh
 
@@ -84,6 +91,7 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 
 *Figure 8: Final migration with 100% traffic to new version*
 
+---
 
 ### 🔹 DevSecOps
 
@@ -91,6 +99,14 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 - Automated vulnerability scanning with Trivy to detect security issues in base Docker images.
 - Enforced Kubernetes security best practices by scanning static manifest files with Kube-sec, identifying misconfigurations before deployment.
 - Hardened cluster components using Kube-bench to assess compliance with Kubernetes Security Benchmarks, mitigating potential risks.
+
+---
+
+### 🔹 Ansible
+
+- Made use of basic Ansible playbooks to configure Virtual machines after provisioning.
+
+---
 
 ### 🔹 Monitoring, Alerting and Observability
 
@@ -122,26 +138,35 @@ Greetify is an end-to-end web application designed to view and manage greetings 
 
 *Figure 14: Alert resolution notification in Slack*
 
-
+---
 
 ### 🔹 Docker compose
 
 - Configured a Docker Compose file to define and manage all required services, ensuring consistent and repeatable deployments.
 
+---
 
 ### 🔹 Scripting & Automation
 
 - Developed Bash scripts to automate Helm chart installations, run scans on Docker images and Static configuration files, and test Istio Virtual Service traffic splitting capabilities.
 
-
+---
 
 ## 🔐 Why This Project Matters
 
-This project was an opportunity to apply enterprise-level DevOps practices. I gained hands-on experience with:
+This project was an opportunity to apply various DevOps and Cloud practices. I gained hands-on experience with:
 
 - Cloud-native tools like Azure, Kubernetes, and Helm
-- Secure infrastructure design with RBAC, Network Policies, and OPA enforcement
-- Building reliable pipelines and deploying production-ready workloads
+- Provisioning Cloud infrastructure seamlessly using Terraform
+- Building CI/CD pipelines and deploying workloads to a Kubernetes Cluster
+- Application monitoring, metric visualization and much more
+
+## 📚 Future Addons / Improvements I'd like to make
+
+- Implement Hashicorp Vault to securely store secrets
+- Utilizing different ArgoCD Deployment patterns such as the App of Apps pattern and Multi-Cluster pattern.
+- Recreating the existing Terraform code to spin up Infrastructure in other public clouds such as AWS.
+
 
 ## 📚 Related Repositories
 
